@@ -57,7 +57,7 @@ Página web informativa para un negocio de repostería casera. Objetivos:
 - [x] Sesión en GitHub con la cuenta personal **fsmezah**.
 - [x] Git configurado solo en este repositorio: `fsmezah` / `330128277+fsmezah@users.noreply.github.com` (el correo de la cuenta es privado).
 - [x] Datos básicos del negocio y logos recibidos.
-- [x] Horario: de 8:00 a. m. a 9:00 p. m. (en schema.org se puso todos los días; confirmar). Entregas en cualquier zona de Puerto Ordaz.
+- [x] Horario: de 8:00 a. m. a 9:00 p. m. todos los días (confirmado). Entregas en cualquier zona de Puerto Ordaz.
 - [x] Primera versión de la página (diseño y estructura).
 - [x] Repositorio local con el primer commit. La página ya apunta a `https://fsmezah.github.io/mera-cake/` (`canonical`, `sitemap.xml`, `robots.txt`); si se compra dominio, cambiar esas URL.
 - [ ] Crear `fsmezah/mera-cake` en GitHub y activar Pages. Bloqueado: la sesión de `gh` usa un token *fine-grained* sin permiso para crear repositorios. Solución: `gh auth login --web`.
