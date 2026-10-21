@@ -1,10 +1,10 @@
-// Mera Cake — formulario de pedido por WhatsApp y precios desde la Google Sheet.
+// Mera Cake — formulario de pedido por WhatsApp y catálogo desde la Google Sheet.
 
 const WHATSAPP = "584249298827";
 
-// URL CSV de la Google Sheet (Archivo > Compartir > Publicar en la web > CSV).
-// Columnas: producto, precio, disponible (si/no). "producto" coincide con data-producto.
-const SHEET_CSV_URL = "";
+// Enlace de compartir de la Google Sheet ("Cualquier persona con el enlace puede ver").
+// Pestaña "Catalogo", columnas: Producto, Precio, Foto (enlace Drive). Plantilla en plantillas/.
+const SHEET_URL = "";
 
 // Formulario: arma el mensaje y abre WhatsApp.
 const form = document.getElementById("form-pedido");
@@ -68,27 +68,85 @@ if (header) {
   marcar();
 }
 
-// Precios y disponibilidad. Si la Sheet falla, se queda "Precio a consultar".
-async function cargarPrecios() {
-  if (!SHEET_CSV_URL) return;
+// Catálogo desde la Sheet. Si falla, se queda lo que está escrito en la página.
+const normalizar = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+
+// CSV con comillas (los precios pueden llevar comas).
+function leerCSV(texto) {
+  const filas = [];
+  let fila = [], campo = "", comillas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i];
+    if (comillas) {
+      if (c === '"' && texto[i + 1] === '"') { campo += '"'; i++; }
+      else if (c === '"') comillas = false;
+      else campo += c;
+    } else if (c === '"') comillas = true;
+    else if (c === ",") { fila.push(campo); campo = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && texto[i + 1] === "\n") i++;
+      fila.push(campo); filas.push(fila); fila = []; campo = "";
+    } else campo += c;
+  }
+  if (campo || fila.length) { fila.push(campo); filas.push(fila); }
+  return filas;
+}
+
+// Enlace de Drive -> imagen servida por Drive.
+function fotoDrive(enlace) {
+  const id = (enlace.match(/\/d\/([\w-]{10,})/) || enlace.match(/[?&]id=([\w-]{10,})/) || [])[1];
+  return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w960` : null;
+}
+
+function ponerFoto(card, src, alt) {
+  const actual = card.querySelector(".photo");
+  const img = document.createElement("img");
+  img.className = "photo";
+  img.width = 960;
+  img.height = 1280;
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.alt = alt;
+  img.addEventListener("error", () => img.replaceWith(actual), { once: true });
+  img.src = src;
+  actual.replaceWith(img);
+}
+
+function crearTarjeta(nombre) {
+  const li = document.createElement("li");
+  li.className = "card";
+  li.innerHTML = '<div class="photo" role="img"><span>Foto</span></div><div class="card__body"><h3></h3><p class="card__price" data-precio>Precio a consultar</p></div>';
+  li.querySelector("h3").textContent = nombre;
+  li.querySelector(".photo").setAttribute("aria-label", `Foto de ${nombre} (pendiente)`);
+  document.querySelector(".cards").append(li);
+  const opcion = new Option(nombre);
+  document.querySelector('#producto option:last-child')?.before(opcion);
+  return li;
+}
+
+async function cargarCatalogo() {
+  const id = (SHEET_URL.match(/\/spreadsheets\/d\/([\w-]+)/) || [])[1];
+  if (!id) return;
   try {
-    const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+    const res = await fetch(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=Catalogo`, { cache: "no-store" });
     if (!res.ok) return;
-    const filas = (await res.text()).trim().split(/\r?\n/).slice(1);
+    const [cabecera, ...filas] = leerCSV(await res.text());
+    const col = (nombre) => cabecera.findIndex((h) => normalizar(h).startsWith(nombre));
+    const cP = col("producto"), cPrecio = col("precio"), cFoto = col("foto");
+    if (cP < 0) return;
+
+    const tarjetas = new Map([...document.querySelectorAll(".cards .card")].map((c) => [normalizar(c.querySelector("h3").textContent), c]));
     for (const fila of filas) {
-      const [producto, precio, disponible] = fila.split(",").map((c) => c.replace(/^"|"$/g, "").trim());
-      const card = document.querySelector(`[data-producto="${CSS.escape(producto)}"]`);
-      if (!card) continue;
-      const el = card.querySelector("[data-precio]");
-      if ((disponible || "").toLowerCase() === "no") {
-        card.classList.add("is-agotado");
-        el.textContent = "No disponible por ahora";
-      } else if (precio) {
-        el.textContent = `Desde ${precio}`;
-      }
+      const nombre = (fila[cP] || "").trim();
+      if (!nombre) continue;
+      const card = tarjetas.get(normalizar(nombre)) || crearTarjeta(nombre);
+      const precio = (fila[cPrecio] || "").trim();
+      if (precio) card.querySelector("[data-precio]").textContent = `Desde ${precio}`;
+      const foto = fotoDrive((fila[cFoto] || "").trim());
+      if (foto) ponerFoto(card, foto, nombre);
     }
   } catch {
-    // Sin conexión o Sheet no publicada: se mantiene el texto por defecto.
+    // Sin conexión o Sheet no compartida: se mantiene el catálogo de la página.
   }
 }
-cargarPrecios();
+cargarCatalogo();

@@ -48,7 +48,8 @@ Página web informativa para un negocio de repostería casera. Objetivos:
 
 - `index.html` — página única con el texto SEO fijo y schema.org `Bakery`.
 - `assets/css/styles.css` — estilos, móvil primero.
-- `assets/js/main.js` — formulario que arma el mensaje de WhatsApp; lee precios de la Sheet si `SHEET_CSV_URL` tiene valor (columnas `producto, precio, disponible`).
+- `assets/js/main.js` — formulario que arma el mensaje de WhatsApp; lee el catálogo de la Sheet si `SHEET_URL` tiene el enlace de compartir (pestaña `Catalogo`, columnas `Producto, Precio, Foto (enlace Drive)`). Un producto con el mismo nombre que uno fijo cambia su precio y foto; uno nuevo se añade como tarjeta y al formulario.
+- `plantillas/catalogo-mera-cake.xlsx` — plantilla de la hoja, para importar en Google Sheets.
 
 ## Estado (2026-10-21)
 
@@ -68,7 +69,8 @@ Página web informativa para un negocio de repostería casera. Objetivos:
 - [ ] Videos para Instagram: proyecto aparte (no en esta web), basado en las skills de [Barty-Bart/motion-graphics](https://github.com/Barty-Bart/motion-graphics) (MIT). Requiere instalar ffmpeg y Playwright.
 - [ ] Precios.
 - [ ] Reseñas: aún no hay. Añadir la sección cuando lleguen las primeras (no se inventan).
-- [ ] Crear la Google Sheet de precios y publicarla como CSV.
+- [x] Plantilla de la hoja del catálogo y código que la lee (probado con datos de ejemplo).
+- [ ] El dueño importa la plantilla en su cuenta personal de Google, la comparte con «Cualquier persona con el enlace» y pasa el enlace para ponerlo en `SHEET_URL`.
 - [ ] Formulario con GAS (por ahora el formulario envía por WhatsApp).
 - [ ] Alta en Search Console y URL en el Perfil de Negocio de Google.
 - [ ] Decidir el dominio.
