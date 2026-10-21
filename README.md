@@ -1,0 +1,69 @@
+# Mera
+
+Página web informativa para un negocio de repostería casera. Objetivos:
+
+- Posicionarse en la zona con SEO local.
+- Usarla como sitio web en el Perfil de Negocio de Google.
+
+## Decisiones tomadas
+
+| Tema | Decisión |
+|---|---|
+| Diseño | Con la skill **ui-ux-pro-max**, pensado primero para el móvil |
+| Alojamiento | Web estática en **GitHub Pages** (Cloudflare Pages como alternativa) |
+| Por qué no solo GAS | Una web de Apps Script vive en `script.google.com/...`, carga en un iframe que Google apenas indexa, no admite dominio propio y muestra un aviso de Google. Va en contra del SEO. |
+| Papel de GAS | Formulario de pedidos/contacto: guarda en una Google Sheet y avisa por correo |
+| Actualizaciones | Precios, disponibilidad y productos de temporada en una **Google Sheet** que lee la web. Diseño, secciones y SEO: los cambia Claude y los publica en GitHub. |
+| Texto fijo (para SEO) | Nombre del negocio, zona, descripción y productos estrella van escritos en la página, no en la Sheet |
+| Dominio | Ni Google One AI Pro ni Workspace lo incluyen, y Google Domains ya no existe. Se compra aparte (10–15 USD/año) en Cloudflare Registrar, Namecheap o Porkbun. Pendiente de decidir. |
+
+## Paso a paso
+
+1. **Datos del negocio** (el dueño): nombre, logo, colores, zona y barrios de entrega, productos con precios y fotos, WhatsApp, horario, entregas o recogida, reseñas.
+2. **Investigación SEO local**: búsquedas de la zona y competencia cercana.
+3. **Diseño** con ui-ux-pro-max.
+4. **Construcción**: secciones Inicio, Catálogo, Sobre nosotros, Pedidos, Zona de entrega, Reseñas y Contacto; botón de WhatsApp; títulos y descripciones, schema.org `Bakery`/`LocalBusiness`, mapa del sitio, imágenes ligeras.
+5. **Formulario de pedidos con GAS** conectado a una Google Sheet.
+6. **Publicación** en GitHub Pages y, opcionalmente, conexión del dominio.
+7. **Google**: alta en Search Console, envío del mapa del sitio y URL en el Perfil de Negocio. El nombre, la dirección y el teléfono deben coincidir exactamente en la web y en el perfil.
+8. **Mantenimiento**: fotos en el Perfil de Negocio, pedir reseñas, actualizar el catálogo por temporada.
+
+## Datos del negocio
+
+- **Nombre:** Mera Cake · lema "Postres con amor"
+- **Zona:** Puerto Ordaz, Bolívar, Venezuela
+- **WhatsApp:** 0424-9298827 (`wa.me/584249298827`)
+- **Entregas:** a domicilio y retiro
+- **Instagram:** [@mera.cake](https://www.instagram.com/mera.cake/) (destacadas: Cakes, Pingüinos, Clientes)
+- **Logo:** `assets/img/logo-marron.png` y `assets/img/logo-blanco.png`; color de marca `#411F0F`
+
+## Diseño (ui-ux-pro-max)
+
+- Paleta marrón del logo sobre crema; verde `#157A3F` solo para WhatsApp (contraste AA).
+- Títulos en Playfair Display (combina con la serif del logo), texto en Inter.
+- Se descartó la tipografía Fredoka y el patrón "embudo" que sugirió la skill: no encajan con la marca.
+- Estructura: portada → catálogo → nosotros → entregas → pedidos; botón flotante de WhatsApp.
+
+## Archivos
+
+- `index.html` — página única con el texto SEO fijo y schema.org `Bakery`.
+- `assets/css/styles.css` — estilos, móvil primero.
+- `assets/js/main.js` — formulario que arma el mensaje de WhatsApp; lee precios de la Sheet si `SHEET_CSV_URL` tiene valor (columnas `producto, precio, disponible`).
+
+## Estado (2026-10-21)
+
+- [x] Git instalado (2.55).
+- [x] GitHub CLI instalado (2.102.1). No está en el PATH de la terminal de VS Code: reiniciar VS Code.
+- [x] Sesión en GitHub con la cuenta personal **fsmezah**.
+- [x] Git configurado solo en este repositorio: `fsmezah` / `330128277+fsmezah@users.noreply.github.com` (el correo de la cuenta es privado).
+- [x] Datos básicos del negocio y logos recibidos.
+- [x] Horario: de 8:00 a. m. a 9:00 p. m. (en schema.org se puso todos los días; confirmar). Entregas en cualquier zona de Puerto Ordaz.
+- [x] Primera versión de la página (diseño y estructura).
+- [x] Repositorio `fsmezah/mera-cake` y GitHub Pages en `https://fsmezah.github.io/mera-cake/` (con `canonical`, `sitemap.xml` y `robots.txt`). Si se compra dominio, cambiar esas URL.
+- [ ] Fotos de los productos (WebP, ~1200 px) para reemplazar los huecos `.photo`.
+- [ ] Precios.
+- [ ] Reseñas: aún no hay. Añadir la sección cuando lleguen las primeras (no se inventan).
+- [ ] Crear la Google Sheet de precios y publicarla como CSV.
+- [ ] Formulario con GAS (por ahora el formulario envía por WhatsApp).
+- [ ] Alta en Search Console y URL en el Perfil de Negocio de Google.
+- [ ] Decidir el dominio.
