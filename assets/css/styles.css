@@ -141,6 +141,59 @@ svg { width: 1.25em; height: 1.25em; fill: none; stroke: currentColor; stroke-wi
 img.photo { width: 100%; object-fit: cover; aspect-ratio: 4 / 5; }
 .photo--hero { aspect-ratio: 4 / 3 !important; object-position: center 60%; border-radius: 28px; box-shadow: var(--shadow); }
 
+/* Carrusel de fotos en las fichas: se desliza con el dedo; flechas y puntos los añade main.js */
+.carrusel { position: relative; }
+.carrusel__pista {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.carrusel__pista::-webkit-scrollbar { display: none; }
+.carrusel__pista > li { flex: 0 0 100%; scroll-snap-align: start; overflow: hidden; }
+.carrusel__btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(65, 31, 15, 0.18);
+  transition: opacity 200ms var(--ease), background-color 200ms var(--ease);
+}
+.carrusel__btn:hover { background: #FFFFFF; }
+.carrusel__btn--prev { left: 8px; }
+.carrusel__btn--next { right: 8px; }
+.carrusel__btn:disabled { opacity: 0; pointer-events: none; }
+.carrusel__puntos {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(43, 22, 11, 0.35);
+}
+.carrusel__puntos span { width: 7px; height: 7px; border-radius: 999px; background: rgba(255, 255, 255, 0.6); transition: width 250ms var(--ease), background-color 250ms var(--ease); }
+.carrusel__puntos span.is-activo { width: 18px; background: #FFFFFF; }
+@media (hover: hover) {
+  .carrusel__btn { opacity: 0; }
+  .card:hover .carrusel__btn:not(:disabled), .carrusel__btn:focus-visible { opacity: 1; }
+}
+
 /* Galería */
 .section--tight { padding-bottom: var(--space-5); }
 .gallery { list-style: none; margin: var(--space-3) 0 var(--space-3); padding: 0; display: grid; gap: var(--space-2); }
@@ -288,6 +341,6 @@ img.photo { width: 100%; object-fit: cover; aspect-ratio: 4 / 5; }
 .anim .wa-float::before { animation: pulso 1.8s ease-out 1.5s 4; }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  html, .carrusel__pista { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }

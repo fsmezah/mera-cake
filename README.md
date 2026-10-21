@@ -48,7 +48,7 @@ Página web informativa para un negocio de repostería casera. Objetivos:
 
 - `index.html` — página única con el texto SEO fijo y schema.org `Bakery`.
 - `assets/css/styles.css` — estilos, móvil primero.
-- `assets/js/main.js` — formulario que arma el mensaje de WhatsApp; lee el catálogo de la Sheet si `SHEET_URL` tiene el enlace de compartir (pestaña `Catalogo`, columnas `Producto, Precio, Foto (enlace Drive)`). Un producto con el mismo nombre que uno fijo cambia su precio y foto; uno nuevo se añade como tarjeta y al formulario.
+- `assets/js/main.js` — formulario que arma el mensaje de WhatsApp; lee el catálogo de la Sheet si `SHEET_URL` tiene el enlace de compartir (pestaña `Catalogo`, columnas `Producto, Precio, Foto (enlace Drive)`). Un producto con el mismo nombre que uno fijo cambia su precio y añade sus fotos al carrusel; uno nuevo se añade como tarjeta y al formulario. Una celda de foto puede tener varios enlaces (espacio o coma), y vale cualquier columna que empiece por «Foto».
 - `plantillas/catalogo-mera-cake.xlsx` — plantilla de la hoja, para importar en Google Sheets.
 
 ## Estado (2026-10-21)
@@ -66,6 +66,7 @@ Página web informativa para un negocio de repostería casera. Objetivos:
 - [x] Catálogo: personalizadas, cumpleaños, chocolate y pingüinos. Se quitó "Tortas de boda" porque no hay foto; volver a añadirla si el dueño la quiere.
 - [ ] Foto de los pingüinos (la tarjeta aún tiene el hueco).
 - [x] Animaciones con CSS y un poco de JS, sin librerías: la portada entra por partes, las secciones aparecen al bajar, las fotos se acercan al pasar el ratón, la cabecera toma sombra y el botón de WhatsApp late unas pocas veces. Solo se activan con la clase `.anim` (JS activo y sin "reducir movimiento"); sin ella todo se ve fijo.
+- [x] Carrusel de fotos en cada ficha (deslizar con el dedo, flechas al pasar el ratón, puntos). Chocolate: 3 fotos; cumpleaños: 2. Se quitó la sección «Tortas recientes» porque repetía las mismas fotos; el enlace a Instagram quedó al final del catálogo.
 - [ ] Videos para Instagram: proyecto aparte (no en esta web), basado en las skills de [Barty-Bart/motion-graphics](https://github.com/Barty-Bart/motion-graphics) (MIT). Requiere instalar ffmpeg y Playwright.
 - [ ] Precios.
 - [ ] Reseñas: aún no hay. Añadir la sección cuando lleguen las primeras (no se inventan).

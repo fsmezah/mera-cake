@@ -98,8 +98,57 @@ function fotoDrive(enlace) {
   return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w960` : null;
 }
 
-function ponerFoto(card, src, alt) {
-  const actual = card.querySelector(".photo");
+// Carrusel de fotos de cada ficha. Con una sola foto no lleva flechas ni puntos.
+const flecha = (d) => `<svg aria-hidden="true" viewBox="0 0 24 24"><path d="${d}"/></svg>`;
+
+function prepararCarrusel(carrusel) {
+  const pista = carrusel.querySelector(".carrusel__pista");
+  carrusel.querySelectorAll(".carrusel__btn, .carrusel__puntos").forEach((el) => el.remove());
+  const total = pista.children.length;
+  if (total < 2) return;
+
+  const nombre = carrusel.getAttribute("aria-label") || "Fotos";
+  const prev = document.createElement("button");
+  const next = document.createElement("button");
+  prev.type = next.type = "button";
+  prev.className = "carrusel__btn carrusel__btn--prev";
+  next.className = "carrusel__btn carrusel__btn--next";
+  prev.setAttribute("aria-label", `${nombre}: foto anterior`);
+  next.setAttribute("aria-label", `${nombre}: foto siguiente`);
+  prev.innerHTML = flecha("m15 18-6-6 6-6");
+  next.innerHTML = flecha("m9 18 6-6-6-6");
+
+  const puntos = document.createElement("div");
+  puntos.className = "carrusel__puntos";
+  puntos.setAttribute("aria-hidden", "true");
+  puntos.innerHTML = "<span></span>".repeat(total);
+  carrusel.append(prev, next, puntos);
+
+  const ir = (paso) => {
+    pista.scrollBy({ left: paso * pista.clientWidth });
+    setTimeout(marcar, 400); // por si el navegador no avisa del desplazamiento
+  };
+  prev.addEventListener("click", () => ir(-1));
+  next.addEventListener("click", () => ir(1));
+
+  const marcar = () => {
+    const i = Math.round(pista.scrollLeft / pista.clientWidth);
+    [...puntos.children].forEach((p, j) => p.classList.toggle("is-activo", j === i));
+    prev.disabled = i <= 0;
+    next.disabled = i >= total - 1;
+  };
+  pista.onscroll = marcar;
+  marcar();
+}
+document.querySelectorAll(".carrusel").forEach(prepararCarrusel);
+
+function agregarFoto(card, src, alt) {
+  const carrusel = card.querySelector(".carrusel");
+  const pista = carrusel.querySelector(".carrusel__pista");
+  // Se guarda el hueco de la primera foto para devolverlo si fallan todas.
+  carrusel.hueco ??= pista.querySelector("div.photo")?.parentElement;
+  const hueco = carrusel.hueco;
+  const li = document.createElement("li");
   const img = document.createElement("img");
   img.className = "photo";
   img.width = 960;
@@ -107,16 +156,25 @@ function ponerFoto(card, src, alt) {
   img.loading = "lazy";
   img.decoding = "async";
   img.alt = alt;
-  img.addEventListener("error", () => img.replaceWith(actual), { once: true });
+  // Si el enlace falla se quita la foto; si era la única, vuelve el hueco.
+  img.addEventListener("error", () => {
+    li.remove();
+    if (!pista.children.length && hueco) pista.append(hueco);
+    prepararCarrusel(carrusel);
+  }, { once: true });
   img.src = src;
-  actual.replaceWith(img);
+  li.append(img);
+  hueco?.remove();
+  pista.append(li);
+  prepararCarrusel(carrusel);
 }
 
 function crearTarjeta(nombre) {
   const li = document.createElement("li");
   li.className = "card";
-  li.innerHTML = '<div class="photo" role="img"><span>Foto</span></div><div class="card__body"><h3></h3><p class="card__price" data-precio>Precio a consultar</p></div>';
+  li.innerHTML = '<div class="carrusel"><ul class="carrusel__pista"><li><div class="photo" role="img"><span>Foto</span></div></li></ul></div><div class="card__body"><h3></h3><p class="card__price" data-precio>Precio a consultar</p></div>';
   li.querySelector("h3").textContent = nombre;
+  li.querySelector(".carrusel").setAttribute("aria-label", `Fotos de ${nombre}`);
   li.querySelector(".photo").setAttribute("aria-label", `Foto de ${nombre} (pendiente)`);
   document.querySelector(".cards").append(li);
   const opcion = new Option(nombre);
@@ -132,7 +190,9 @@ async function cargarCatalogo() {
     if (!res.ok) return;
     const [cabecera, ...filas] = leerCSV(await res.text());
     const col = (nombre) => cabecera.findIndex((h) => normalizar(h).startsWith(nombre));
-    const cP = col("producto"), cPrecio = col("precio"), cFoto = col("foto");
+    const cP = col("producto"), cPrecio = col("precio");
+    // Fotos: todas las columnas que empiecen por "Foto"; cada celda puede tener varios enlaces.
+    const cFotos = cabecera.map((h, i) => (normalizar(h).startsWith("foto") ? i : -1)).filter((i) => i >= 0);
     if (cP < 0) return;
 
     const tarjetas = new Map([...document.querySelectorAll(".cards .card")].map((c) => [normalizar(c.querySelector("h3").textContent), c]));
@@ -142,8 +202,8 @@ async function cargarCatalogo() {
       const card = tarjetas.get(normalizar(nombre)) || crearTarjeta(nombre);
       const precio = (fila[cPrecio] || "").trim();
       if (precio) card.querySelector("[data-precio]").textContent = `Desde ${precio}`;
-      const foto = fotoDrive((fila[cFoto] || "").trim());
-      if (foto) ponerFoto(card, foto, nombre);
+      const enlaces = cFotos.flatMap((i) => (fila[i] || "").split(/[\s,;]+/));
+      for (const foto of enlaces.map(fotoDrive).filter(Boolean)) agregarFoto(card, foto, nombre);
     }
   } catch {
     // Sin conexión o Sheet no compartida: se mantiene el catálogo de la página.
