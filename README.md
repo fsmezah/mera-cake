@@ -60,7 +60,7 @@ Página web informativa para un negocio de repostería casera. Objetivos:
 - [x] Horario: de 8:00 a. m. a 9:00 p. m. todos los días (confirmado). Entregas en cualquier zona de Puerto Ordaz.
 - [x] Primera versión de la página (diseño y estructura).
 - [x] Repositorio local con el primer commit. La página ya apunta a `https://fsmezah.github.io/mera-cake/` (`canonical`, `sitemap.xml`, `robots.txt`); si se compra dominio, cambiar esas URL.
-- [ ] Crear `fsmezah/mera-cake` en GitHub y activar Pages. Bloqueado: la sesión de `gh` usa un token *fine-grained* sin permiso para crear repositorios. Solución: `gh auth login --web`.
+- [x] Publicada (2026-10-21): repositorio [fsmezah/mera-cake](https://github.com/fsmezah/mera-cake), web en <https://fsmezah.github.io/mera-cake/> (GitHub Pages desde `main`, raíz). Cada `git push` a `main` la actualiza.
 - [x] Fotos de tortas en `assets/img/` (WebP a 480 y 960 px, generadas con Pillow desde las originales). `compartir.jpg` (1200×630) es la imagen al compartir el enlace.
 - [x] Catálogo: personalizadas, cumpleaños, chocolate y pingüinos. Se quitó "Tortas de boda" porque no hay foto; volver a añadirla si el dueño la quiere.
 - [ ] Foto de los pingüinos (la tarjeta aún tiene el hueco).
