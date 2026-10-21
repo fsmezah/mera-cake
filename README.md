@@ -70,7 +70,7 @@ Página web informativa para un negocio de repostería casera. Objetivos:
 - [ ] Precios.
 - [ ] Reseñas: aún no hay. Añadir la sección cuando lleguen las primeras (no se inventan).
 - [x] Plantilla de la hoja del catálogo y código que la lee (probado con datos de ejemplo).
-- [ ] El dueño importa la plantilla en su cuenta personal de Google, la comparte con «Cualquier persona con el enlace» y pasa el enlace para ponerlo en `SHEET_URL`.
+- [x] Hoja del catálogo conectada: https://docs.google.com/spreadsheets/d/1DnWVLkb8YCFX6Dx_l6YpkQo9KS1MNRb-/edit (cuenta personal del dueño, compartida como lector con el enlace).
 - [ ] Formulario con GAS (por ahora el formulario envía por WhatsApp).
 - [ ] Alta en Search Console y URL en el Perfil de Negocio de Google.
 - [ ] Decidir el dominio.

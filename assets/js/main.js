@@ -4,7 +4,7 @@ const WHATSAPP = "584249298827";
 
 // Enlace de compartir de la Google Sheet ("Cualquier persona con el enlace puede ver").
 // Pestaña "Catalogo", columnas: Producto, Precio, Foto (enlace Drive). Plantilla en plantillas/.
-const SHEET_URL = "";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1DnWVLkb8YCFX6Dx_l6YpkQo9KS1MNRb-/edit";
 
 // Formulario: arma el mensaje y abre WhatsApp.
 const form = document.getElementById("form-pedido");
