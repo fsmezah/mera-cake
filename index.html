@@ -20,6 +20,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700;800&display=swap">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <script>
+    // Activa las animaciones solo con JavaScript y si el usuario no pidió reducir el movimiento.
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("anim");
+  </script>
 
   <script type="application/ld+json">
   {

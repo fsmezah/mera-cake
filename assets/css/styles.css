@@ -246,6 +246,48 @@ img.photo { width: 100%; object-fit: cover; aspect-ratio: 4 / 5; }
   .split { grid-template-columns: 1fr 1fr; gap: var(--space-5); align-items: start; }
 }
 
+/* Animaciones. Solo con la clase .anim (JS activo y sin "reducir movimiento"). */
+@keyframes subir { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes aparecer-foto { from { opacity: 0; transform: scale(0.94) rotate(-1.5deg); } to { opacity: 1; transform: none; } }
+@keyframes pulso { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(1.7); opacity: 0; } }
+
+/* Portada: entra por partes al cargar */
+.anim .hero__text > * { animation: subir 700ms var(--ease) both; }
+.anim .hero__text > :nth-child(2) { animation-delay: 90ms; }
+.anim .hero__text > :nth-child(3) { animation-delay: 180ms; }
+.anim .hero__text > :nth-child(4) { animation-delay: 270ms; }
+.anim .hero__media { animation: aparecer-foto 900ms var(--ease) 150ms both; }
+
+/* Al bajar por la página */
+.anim .reveal { opacity: 0; transform: translateY(20px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
+.anim .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Fotos: se acercan un poco al pasar por encima */
+.card, .gallery li { overflow: hidden; }
+.gallery li { border-radius: var(--radius); box-shadow: var(--shadow); }
+.gallery img { box-shadow: none; }
+.card img.photo, .gallery img { transition: transform 600ms var(--ease); }
+.card { transition: transform 300ms var(--ease), box-shadow 300ms var(--ease); }
+@media (hover: hover) {
+  .card:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(65, 31, 15, 0.14); }
+  .card:hover img.photo, .gallery li:hover img { transform: scale(1.05); }
+}
+
+/* Cabecera con sombra al bajar */
+.header { transition: box-shadow 300ms var(--ease); }
+.header.is-scrolled { box-shadow: 0 4px 18px rgba(65, 31, 15, 0.08); }
+
+/* Botón de WhatsApp: pulso suave unas pocas veces */
+.wa-float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-wa);
+  z-index: -1;
+}
+.anim .wa-float::before { animation: pulso 1.8s ease-out 1.5s 4; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }

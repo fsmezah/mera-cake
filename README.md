@@ -64,6 +64,8 @@ Página web informativa para un negocio de repostería casera. Objetivos:
 - [x] Fotos de tortas en `assets/img/` (WebP a 480 y 960 px, generadas con Pillow desde las originales). `compartir.jpg` (1200×630) es la imagen al compartir el enlace.
 - [x] Catálogo: personalizadas, cumpleaños, chocolate y pingüinos. Se quitó "Tortas de boda" porque no hay foto; volver a añadirla si el dueño la quiere.
 - [ ] Foto de los pingüinos (la tarjeta aún tiene el hueco).
+- [x] Animaciones con CSS y un poco de JS, sin librerías: la portada entra por partes, las secciones aparecen al bajar, las fotos se acercan al pasar el ratón, la cabecera toma sombra y el botón de WhatsApp late unas pocas veces. Solo se activan con la clase `.anim` (JS activo y sin "reducir movimiento"); sin ella todo se ve fijo.
+- [ ] Videos para Instagram: proyecto aparte (no en esta web), basado en las skills de [Barty-Bart/motion-graphics](https://github.com/Barty-Bart/motion-graphics) (MIT). Requiere instalar ffmpeg y Playwright.
 - [ ] Precios.
 - [ ] Reseñas: aún no hay. Añadir la sección cuando lleguen las primeras (no se inventan).
 - [ ] Crear la Google Sheet de precios y publicarla como CSV.

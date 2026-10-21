@@ -37,6 +37,37 @@ if (form) {
   });
 }
 
+// Animaciones al bajar por la página. Sin .anim (sin JS o con "reducir movimiento") todo se ve fijo.
+if (document.documentElement.classList.contains("anim") && "IntersectionObserver" in window) {
+  const grupos = ".cards > li, .gallery > li, .features > li";
+  const sueltos = ".section .eyebrow, .section h2, .section__intro, .split > div > p, .gallery__more, .form";
+  document.querySelectorAll(grupos).forEach((el) => {
+    el.style.setProperty("--i", [...el.parentElement.children].indexOf(el));
+    el.classList.add("reveal");
+  });
+  document.querySelectorAll(sueltos).forEach((el) => el.classList.add("reveal"));
+
+  const obs = new IntersectionObserver((entradas) => {
+    for (const e of entradas) {
+      if (!e.isIntersecting) continue;
+      const el = e.target;
+      el.classList.add("is-visible");
+      obs.unobserve(el);
+      // Al terminar, quitar las clases para que no estorben al efecto hover de las tarjetas.
+      el.addEventListener("transitionend", () => el.classList.remove("reveal", "is-visible"), { once: true });
+    }
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach((el) => obs.observe(el));
+}
+
+// Sombra en la cabecera al bajar.
+const header = document.querySelector(".header");
+if (header) {
+  const marcar = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
+  window.addEventListener("scroll", marcar, { passive: true });
+  marcar();
+}
+
 // Precios y disponibilidad. Si la Sheet falla, se queda "Precio a consultar".
 async function cargarPrecios() {
   if (!SHEET_CSV_URL) return;
